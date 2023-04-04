@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db');
-
 const { concerts } = require('./db');
 
 // get all concerts
@@ -15,7 +14,6 @@ router.route('/concerts/random').get((req, res) => {
   res.json(randomConcert);
 });
 
-
 // get concert by its id
 router.route('/concerts/:id').get((req, res) => {
   const matchingConcert = concerts.find(concert => concert.id === req.params.id)
@@ -27,28 +25,30 @@ router.route('/concerts/:id').get((req, res) => {
   }
 })
 
-
 // modify concert by its id
 router.route('/concerts/:id').put((req, res) => {
-  const newConcert = {
-    author: 'John Doe',
-    text: 'This company is everything you need !'
-  };
-  db.concerts.push(newConcert);
-  res.json({ message: 'OK' });
+  const id = req.params.id;
+  const concert = db.concerts.find(concert => concert.id == id);
+  if (!concert) {
+    return res.status(404).json({ message: 'Concert not found' })
+  }
+  else {
+    concert.author = req.body.author;
+    concert.text = req.body.text;
+    res.json({ message: 'OK' });
+  }
 });
-
 
 // add concerts
 router.route('/concerts').post((req, res) => {
   const newConcert = {
-    author: 'John Doe',
-    text: 'This company is worth every coin!'
+    id: Math.floor(Math.random() * 100000),
+    author: req.body.author,
+    text: req.body.text
   };
   db.concerts.push(newConcert)
-  res.json({ message: 'OK' });
+  res.status(201).json({ message: 'OK' });
 });
-
 
 // delete concert by its id
 router.route('/concerts/:id').delete((req, res) => {

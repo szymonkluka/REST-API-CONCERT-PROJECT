@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db');
 
-const { seats } = require('./db');
+const { seats, concerts } = require('./db');
 
 // get all seats
 router.route('/seats').get((req, res) => {
@@ -28,12 +28,16 @@ router.route('/seats/:id').get((req, res) => {
 
 // modify seat by its id
 router.route('/seats/:id').put((req, res) => {
-  const newSeat = {
-    author: 'John Doe',
-    text: 'This company is worth every coin! Join us to find out more !'
-  };
-  db.seats.push(newSeat);
-  res.json({ message: 'OK' });
+  const id = req.params.id;
+  const seat = db.seats.find(seat => seat.id == id);
+  if (!seat) {
+    return res.status(404).json({ message: 'seat not found' })
+  }
+  else {
+    seat.author = req.body.author;
+    seat.text = req.body.text;
+    res.json({ message: 'OK' });
+  }
 });
 
 router.route('/seats').post((req, res) => {

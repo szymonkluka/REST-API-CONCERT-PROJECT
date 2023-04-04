@@ -28,29 +28,34 @@ router.route('/testimonials/:id').get((req, res) => {
 
 // modify testimonial by its id
 router.route('/testimonials/:id').put((req, res) => {
-  const newTestimonial = {
-    author: 'John Doe',
-    text: 'This company is worth every coin!'
-  };
-  db.testimonials.push(newTestimonial);
+  const id = req.params.id;
+  const testimonial = db.testimonials.find(testimonial => testimonial.id == id);
+
+  if (!testimonial) {
+    return res.status(404).json({ message: 'Testimonial not found' });
+  }
+  else {
+    testimonial.author = req.body.author;
+    testimonial.text = req.body.text;
+  }
   res.json({ message: 'OK' });
 });
 
-// add testimonials
 router.route('/testimonials').post((req, res) => {
   const newTestimonial = {
-    author: 'John Doe',
-    text: 'This company is worth every coin!'
+    id: Math.floor(Math.random() * 100000),
+    author: req.body.author,
+    text: req.body.text
   };
   db.testimonials.push(newTestimonial)
-  res.json({ message: 'OK' });
+  res.status(201).json({ message: 'OK' });
 });
 
 // delete testimonial by its id
 router.route('/testimonials/:id').delete((req, res) => {
   const index = testimonials.findIndex((element) => element.id == req.params.id);
 
-  if (index != -1) {
+  if (index !== -1) {
     testimonials.splice(index, 1);
     res.json({ message: 'OK' });
   } else {
