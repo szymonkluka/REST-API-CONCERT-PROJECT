@@ -59,9 +59,9 @@ const db = {
   ],
   seats: [
     {
-      id: 1,
-      day: 1,
-      seat: 3,
+      id: '1',
+      day: '1',
+      seat: '3',
       client: 'Amanda Doe',
       email: 'amandadoe@example.com',
     },
