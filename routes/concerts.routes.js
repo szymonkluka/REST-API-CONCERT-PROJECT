@@ -15,6 +15,8 @@ router.route('/concerts/random').get((req, res) => {
   res.json(randomConcert);
 });
 
+
+// get concert by its id
 router.route('/concerts/:id').get((req, res) => {
   const matchingConcert = concerts.find(concert => concert.id === req.params.id)
   if (matchingConcert) {
@@ -37,7 +39,7 @@ router.route('/concerts/:id').put((req, res) => {
 });
 
 
-// add concert
+// add concerts
 router.route('/concerts').post((req, res) => {
   const newConcert = {
     author: 'John Doe',

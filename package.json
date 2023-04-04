@@ -1,5 +1,5 @@
 {
-  "name": "express.Router",
+  "name": "rest-api",
   "version": "1.0.0",
   "description": "express.Router",
   "main": "server.js",
@@ -7,7 +7,9 @@
     "start": "nodemon server.js"
   },
   "keywords": [
-    "express", "router", "express.Router"
+    "express",
+    "router",
+    "express.Router"
   ],
   "author": "Simon K",
   "license": "MIT",

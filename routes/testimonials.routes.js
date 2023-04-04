@@ -15,7 +15,6 @@ router.route('/testimonials/random').get((req, res) => {
   res.json(randomTestimonial);
 });
 
-
 // get testimonial by its id
 router.route('/testimonials/:id').get((req, res) => {
   const matchingTestimonial = testimonials.find(testimonial => testimonial.id === req.params.id)
@@ -27,7 +26,6 @@ router.route('/testimonials/:id').get((req, res) => {
   }
 })
 
-
 // modify testimonial by its id
 router.route('/testimonials/:id').put((req, res) => {
   const newTestimonial = {
@@ -38,8 +36,7 @@ router.route('/testimonials/:id').put((req, res) => {
   res.json({ message: 'OK' });
 });
 
-
-// add testimonial
+// add testimonials
 router.route('/testimonials').post((req, res) => {
   const newTestimonial = {
     author: 'John Doe',
@@ -48,7 +45,6 @@ router.route('/testimonials').post((req, res) => {
   db.testimonials.push(newTestimonial)
   res.json({ message: 'OK' });
 });
-
 
 // delete testimonial by its id
 router.route('/testimonials/:id').delete((req, res) => {

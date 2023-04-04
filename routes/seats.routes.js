@@ -36,8 +36,7 @@ router.route('/seats/:id').put((req, res) => {
   res.json({ message: 'OK' });
 });
 
-
-// add seat by its id
+// add seats
 router.route('/seats').post((req, res) => {
   const newSeat = {
     author: 'John Doe',
@@ -46,7 +45,6 @@ router.route('/seats').post((req, res) => {
   db.seats.push(newSeat)
   res.json({ message: 'OK' });
 });
-
 
 // delete seat by its id
 router.route('/seats/:id').delete((req, res) => {
