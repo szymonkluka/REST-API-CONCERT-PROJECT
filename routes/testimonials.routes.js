@@ -17,7 +17,7 @@ router.route('/testimonials/random').get((req, res) => {
 
 // get testimonial by its id
 router.route('/testimonials/:id').get((req, res) => {
-  const matchingTestimonial = testimonials.find(testimonial => testimonial.id === req.params.id)
+  const matchingTestimonial = testimonials.find(testimonial => testimonial.id === parseInt(req.params.id))
   if (matchingTestimonial) {
     res.json(matchingTestimonial);
   }

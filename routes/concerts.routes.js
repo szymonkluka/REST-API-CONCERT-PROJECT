@@ -16,7 +16,7 @@ router.route('/concerts/random').get((req, res) => {
 
 // get concert by its id
 router.route('/concerts/:id').get((req, res) => {
-  const matchingConcert = concerts.find(concert => concert.id === req.params.id)
+  const matchingConcert = concerts.find(concert => concert.id === parseInt(req.params.id));
   if (matchingConcert) {
     res.json(matchingConcert);
   }
@@ -30,11 +30,13 @@ router.route('/concerts/:id').put((req, res) => {
   const id = req.params.id;
   const concert = db.concerts.find(concert => concert.id == id);
   if (!concert) {
-    return res.status(404).json({ message: 'Concert not found' })
-  }
-  else {
-    concert.author = req.body.author;
-    concert.text = req.body.text;
+    return res.status(404).json({ message: 'Concert not found' });
+  } else {
+    concert.performer = req.body.performer;
+    concert.genre = req.body.genre;
+    concert.price = req.body.price;
+    concert.day = req.body.day;
+    concert.image = req.body.image;
     res.json({ message: 'OK' });
   }
 });
@@ -43,10 +45,13 @@ router.route('/concerts/:id').put((req, res) => {
 router.route('/concerts').post((req, res) => {
   const newConcert = {
     id: Math.floor(Math.random() * 100000),
-    author: req.body.author,
-    text: req.body.text
+    performer: req.body.performer,
+    genre: req.body.genre,
+    price: req.body.price,
+    day: req.body.day,
+    image: req.body.image
   };
-  db.concerts.push(newConcert)
+  db.concerts.push(newConcert);
   res.status(201).json({ message: 'OK' });
 });
 

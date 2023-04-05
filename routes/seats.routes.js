@@ -17,9 +17,9 @@ router.route('/seats/random').get((req, res) => {
 
 // get seat by its id
 router.route('/seats/:id').get((req, res) => {
-  const matchingSeats = seats.find(seat => seat.id === req.params.id)
-  if (matchingSeats) {
-    res.json(matchingSeats);
+  const matchingSeat = seats.find(seat => seat.id === parseInt(req.params.id));
+  if (matchingSeat) {
+    res.json(matchingSeat);
   }
   else {
     res.status(404).sendStatus("Seats not found");
@@ -27,16 +27,24 @@ router.route('/seats/:id').get((req, res) => {
 })
 
 // modify seat by its id
+
 router.route('/seats/:id').put((req, res) => {
   const id = req.params.id;
-  const seat = db.seats.find(seat => seat.id == id);
-  if (!seat) {
-    return res.status(404).json({ message: 'seat not found' })
-  }
-  else {
-    seat.author = req.body.author;
-    seat.text = req.body.text;
-    res.json({ message: 'OK' });
+  const { day, seat, client, email } = req.body;
+
+  const index = seats.findIndex((seat) => seat.id == id);
+
+  if (index !== -1) {
+    seats[index] = {
+      ...seats[index],
+      day: day || seats[index].day,
+      seat: seat || seats[index].seat,
+      client: client || seats[index].client,
+      email: email || seats[index].email,
+    };
+    res.json({ message: `Seat ${id} updated successfully.` });
+  } else {
+    res.status(404).json({ message: `Seat ${id} not found.` });
   }
 });
 
@@ -64,6 +72,7 @@ router.route('/seats').post((req, res) => {
   // Return a response with status code 201 (Created) and the message "OK"
   res.status(201).json({ message: 'OK' });
 });
+
 
 // delete seat by its id
 router.route('/seats/:id').delete((req, res) => {
