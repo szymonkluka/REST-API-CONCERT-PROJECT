@@ -59,12 +59,12 @@ router.route('/concerts').post((req, res) => {
 router.route('/concerts/:id').delete((req, res) => {
   const index = concerts.findIndex((element) => element.id == req.params.id);
 
-  if (index != -1) {
-    concerts.splice(index, 1);
-    res.json({ message: 'OK' });
-  } else {
-    res.status(404).json({ message: 'Not found...' });
+  if (index === -1) {
+    return res.status(404).json({ message: 'Not found...' });
   }
+
+  concerts.splice(index, 1);
+  res.json({ message: 'OK' });
 });
 
 module.exports = router;

@@ -55,12 +55,12 @@ router.route('/testimonials').post((req, res) => {
 router.route('/testimonials/:id').delete((req, res) => {
   const index = testimonials.findIndex((element) => element.id == req.params.id);
 
-  if (index !== -1) {
-    testimonials.splice(index, 1);
-    res.json({ message: 'OK' });
-  } else {
-    res.status(404).json({ message: 'Not found...' });
+  if (index === -1) {
+    return res.status(404).json({ message: 'Not found...' });
   }
+
+  testimonials.splice(index, 1);
+  res.json({ message: 'OK' });
 });
 
 module.exports = router;

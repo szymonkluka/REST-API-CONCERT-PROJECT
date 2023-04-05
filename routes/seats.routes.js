@@ -78,12 +78,12 @@ router.route('/seats').post((req, res) => {
 router.route('/seats/:id').delete((req, res) => {
   const index = seats.findIndex((element) => element.id == req.params.id);
 
-  if (index != -1) {
-    seats.splice(index, 1);
-    res.json({ message: 'OK' });
-  } else {
-    res.status(404).json({ message: 'Not found...' });
+  if (index === -1) {
+    return res.status(404).json({ message: 'Not found...' });
   }
+
+  seats.splice(index, 1);
+  res.json({ message: 'OK' });
 });
 
 module.exports = router;
