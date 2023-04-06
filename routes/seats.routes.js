@@ -21,10 +21,9 @@ router.route('/seats/:id').get((req, res) => {
   if (matchingSeat) {
     res.json(matchingSeat);
   }
-  else {
-    res.status(404).sendStatus("Seats not found");
-  }
-})
+  res.status(404).json({ message: 'Seat not found' });
+
+});
 
 // modify seat by its id
 
@@ -43,33 +42,21 @@ router.route('/seats/:id').put((req, res) => {
       email: email || seats[index].email,
     };
     res.json({ message: `Seat ${id} updated successfully.` });
-  } else {
-    res.status(404).json({ message: `Seat ${id} not found.` });
   }
+  res.status(404).json({ message: `Seat ${id} not found.` });
+  return;
+
 });
 
 router.route('/seats').post((req, res) => {
-  const day = req.body.day;
-  const seat = req.body.seat;
-
-  // Check if the seat is already occupied
-  const isOccupied = db.seats.some((s) => s.day === day && s.seat === seat);
-  if (isOccupied) {
-    // Return a response with status code 409 (Conflict) and the message "The slot is already taken..."
-    return res.status(409).json({ message: 'The slot is already taken...' });
-  }
-
-  // If the seat is not occupied, add the new seat to the seats array in the db object
   const newSeat = {
-    id: db.seats.length + 1,
-    day: day,
-    seat: seat,
+    id: Math.floor(Math.random() * 100000),
+    day: req.body.day,
+    seat: req.body.seat,
     client: req.body.client,
     email: req.body.email,
   };
   db.seats.push(newSeat);
-
-  // Return a response with status code 201 (Created) and the message "OK"
   res.status(201).json({ message: 'OK' });
 });
 
@@ -84,6 +71,10 @@ router.route('/seats/:id').delete((req, res) => {
 
   seats.splice(index, 1);
   res.json({ message: 'OK' });
+});
+
+router.use((req, res) => {
+  res.status(404).json({ message: 'Element not found' });
 });
 
 module.exports = router;
