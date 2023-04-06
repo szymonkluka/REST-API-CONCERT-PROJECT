@@ -27,19 +27,14 @@ router.route('/testimonials/:id').get((req, res) => {
 
 router.route('/testimonials/:id').put((req, res) => {
   const id = req.params.id;
-  const { author, text } = req.body;
-  const index = testimonials.findIndex((testimonial) => testimonial.id === parseInt(req.params.id));
+  const testimonial = db.testimonials.find(testimonial => testimonial.id == id);
 
-  if (index !== -1) {
-    db.testimonials[index] = {
-      ...testimonials[index],
-      author: author || testimonials[index].author,
-      text: text || testimonials[index].text,
-    };
-    res.json({ message: `Testimonial ${id} updated successfully.` });
+  if (!testimonial) {
+    return res.status(404).json({ message: 'Testimonial not found' });
   }
-  res.status(404).json({ message: 'Testimonial not found' });
-
+  testimonial.author = req.body.author;
+  testimonial.text = req.body.text;
+  res.json({ message: 'OK' });
 });
 
 router.route('/testimonials').post((req, res) => {

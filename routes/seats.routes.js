@@ -29,23 +29,15 @@ router.route('/seats/:id').get((req, res) => {
 
 router.route('/seats/:id').put((req, res) => {
   const id = req.params.id;
-  const { day, seat, client, email } = req.body;
-
-  const index = seats.findIndex((seat) => seat.id == id);
-
-  if (index !== -1) {
-    seats[index] = {
-      ...seats[index],
-      day: day || seats[index].day,
-      seat: seat || seats[index].seat,
-      client: client || seats[index].client,
-      email: email || seats[index].email,
-    };
-    res.json({ message: `Seat ${id} updated successfully.` });
+  const seat = db.seats.find(seat => seat.id == id);
+  if (!seat) {
+    return res.status(404).json({ message: 'Seat not found' });
   }
-  res.status(404).json({ message: `Seat ${id} not found.` });
-  return;
-
+  seat.day = req.body.day;
+  seat.seat = req.body.seat;
+  seat.client = req.body.client;
+  seat.email = req.body.email;
+  res.json({ message: 'OK' });
 });
 
 router.route('/seats').post((req, res) => {
@@ -74,7 +66,7 @@ router.route('/seats/:id').delete((req, res) => {
 });
 
 router.use((req, res) => {
-  res.status(404).json({ message: 'Element not found' });
+  res.status(404).json({ message: '404 Not Found' });
 });
 
 module.exports = router;

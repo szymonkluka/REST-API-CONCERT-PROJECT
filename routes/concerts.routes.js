@@ -26,23 +26,16 @@ router.route('/concerts/:id').get((req, res) => {
 // modify concert by its id
 router.route('/concerts/:id').put((req, res) => {
   const id = req.params.id;
-  const { performer, genre, price, day, image } = req.body;
-
-  const index = concerts.findIndex((concert) => concert.id == parseInt(id));
-
-  if (index !== -1) {
-    concerts[index] = {
-      ...concerts[index],
-      performer: performer || concerts[index].performer,
-      genre: genre || concerts[index].genre,
-      price: price || concerts[index].price,
-      day: day || concerts[index].day,
-      image: image || concerts[index].image,
-    };
-    res.json({ message: `Concert ${id} updated successfully.` });
+  const concert = db.concerts.find(concert => concert.id == id);
+  if (!concert) {
+    return res.status(404).json({ message: 'Concert not found' });
   }
-  res.status(404).json({ message: `Concert ${id} not found.` });
-
+  concert.performer = req.body.performer;
+  concert.genre = req.body.genre;
+  concert.price = req.body.price;
+  concert.day = req.body.day;
+  concert.image = req.body.image;
+  res.json({ message: 'OK' });
 });
 
 // add concerts
