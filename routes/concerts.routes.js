@@ -18,7 +18,7 @@ router.route('/concerts/random').get((req, res) => {
 router.route('/concerts/:id').get((req, res) => {
   const matchingConcert = concerts.find(concert => concert.id === parseInt(req.params.id));
   if (matchingConcert) {
-    res.json(matchingConcert);
+    return res.json(matchingConcert);
   }
   res.status(404).json({ message: 'Concert not found' });
 })

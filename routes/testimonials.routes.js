@@ -18,7 +18,7 @@ router.route('/testimonials/random').get((req, res) => {
 router.route('/testimonials/:id').get((req, res) => {
   const matchingTestimonial = testimonials.find(testimonial => testimonial.id === parseInt(req.params.id))
   if (matchingTestimonial) {
-    res.json(matchingTestimonial);
+    return res.json(matchingTestimonial);
   }
   res.status(404).json({ message: 'Testimonial not found' });
 })

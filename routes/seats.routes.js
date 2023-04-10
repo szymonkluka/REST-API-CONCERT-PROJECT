@@ -19,10 +19,9 @@ router.route('/seats/random').get((req, res) => {
 router.route('/seats/:id').get((req, res) => {
   const matchingSeat = seats.find(seat => seat.id === parseInt(req.params.id));
   if (matchingSeat) {
-    res.json(matchingSeat);
+    return res.json(matchingSeat);
   }
   res.status(404).json({ message: 'Seat not found' });
-
 });
 
 // modify seat by its id
