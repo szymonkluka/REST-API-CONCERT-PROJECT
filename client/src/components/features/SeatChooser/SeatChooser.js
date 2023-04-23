@@ -1,24 +1,28 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Progress, Alert } from 'reactstrap';
-import { getSeats, loadSeatsRequest, getRequests } from '../../../redux/seatsRedux';
+import io from "socket.io-client";
+import { getSeats, getRequests, loadSeats, loadSeatsRequest } from '../../../redux/seatsRedux';
 import './SeatChooser.scss';
 
 const SeatChooser = ({ chosenDay, chosenSeat, updateSeat }) => {
   const dispatch = useDispatch();
   const seats = useSelector(getSeats);
   const requests = useSelector(getRequests);
+  const socketRef = useRef();
 
   useEffect(() => {
+    const socket = io("http://localhost:8000");
+    socketRef.current = socket;
+
     dispatch(loadSeatsRequest());
 
-    // Refresh seat occupancy data every 2 minutes
-    const intervalId = setInterval(() => {
-      dispatch(loadSeatsRequest());
-    }, 2 * 60 * 1000);
+    socket.on("updateSeats", (seats) => {
+      dispatch(loadSeats(seats));
+    });
 
     return () => {
-      clearInterval(intervalId);
+      socket.disconnect();
     };
   }, [dispatch]);
 
@@ -52,7 +56,9 @@ const SeatChooser = ({ chosenDay, chosenSeat, updateSeat }) => {
         </Button>
       );
   };
-
+  const totalSeats = 50;
+  const occupiedSeats = seats.filter((seat) => seat.day === chosenDay).length
+  const freeSeats = totalSeats - occupiedSeats;
   return (
     <div>
       <h3>Pick a seat</h3>
@@ -62,17 +68,16 @@ const SeatChooser = ({ chosenDay, chosenSeat, updateSeat }) => {
       <small id='pickHelpTwo' className='form-text text-muted ml-2 mb-4'>
         <Button outline color='primary' /> – it's empty
       </small>
-      {requests['LOAD_SEATS'] && requests['LOAD_SEATS'].success && (
-        <div className='seats'>
-          {[...Array(50)].map((x, i) => prepareSeat(i + 1))}
-        </div>
-      )}
+      <div className='seats'>
+        {[...Array(50)].map((x, i) => prepareSeat(i + 1))}
+      </div>
       {requests['LOAD_SEATS'] && requests['LOAD_SEATS'].pending && (
         <Progress animated color='primary' value={50} />
       )}
       {requests['LOAD_SEATS'] && requests['LOAD_SEATS'].error && (
         <Alert color='warning'>Couldn't load seats...</Alert>
       )}
+      <p>Free seats: {freeSeats}/{totalSeats}</p>
     </div>
   );
 };

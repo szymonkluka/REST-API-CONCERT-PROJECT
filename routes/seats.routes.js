@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db');
 
-const { seats, concerts } = require('./db');
+const { seats } = require('./db');
 
 // get all seats
 router.route('/seats').get((req, res) => {
@@ -27,17 +27,26 @@ router.route('/seats/:id').get((req, res) => {
 // modify seat by its id
 
 router.route('/seats/:id').put((req, res) => {
-  const id = req.params.id;
-  const seat = db.seats.find(seat => seat.id == id);
-  if (!seat) {
-    return res.status(404).json({ message: 'Seat not found' });
+  const seatId = parseInt(req.params.id);
+
+  const seatIndex = db.seats.findIndex((seat) => seat.id === seatId);
+
+  if (seatIndex !== -1) {
+    db.seats[seatIndex] = {
+      ...db.seats[seatIndex],
+      ...req.body,
+      id: seatId,
+    };
+
+    // Emit the 'updateSeats' event to connected clients after updating the db object
+    req.io.emit('updateSeats', db.seats);
+
+    res.json({ message: 'OK' });
+  } else {
+    res.status(404).json({ message: 'Not found...' });
   }
-  seat.day = req.body.day;
-  seat.seat = req.body.seat;
-  seat.client = req.body.client;
-  seat.email = req.body.email;
-  res.json({ message: 'OK' });
 });
+
 
 router.route('/seats').post((req, res) => {
   const newSeat = {
@@ -47,7 +56,9 @@ router.route('/seats').post((req, res) => {
     client: req.body.client,
     email: req.body.email,
   };
-  db.seats.push(newSeat);
+  db.seats = [...db.seats, newSeat]; // update db.seats array
+  const updatedSeatsData = db.seats;
+  req.io.emit('updateSeats', updatedSeatsData);
   res.status(201).json({ message: 'OK' });
 });
 
