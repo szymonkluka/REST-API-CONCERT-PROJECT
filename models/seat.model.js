@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
 const seatSchema = new mongoose.Schema({
+    id: {
+        type: Number,
+    },
     day: {
         type: Number,
         required: true,

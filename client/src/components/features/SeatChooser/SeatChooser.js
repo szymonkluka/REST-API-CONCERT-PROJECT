@@ -18,6 +18,7 @@ const SeatChooser = ({ chosenDay, chosenSeat, updateSeat }) => {
     dispatch(loadSeatsRequest());
 
     socket.on("updateSeats", (seats) => {
+      console.log("updateSeats event received:", seats)
       dispatch(loadSeats(seats));
     });
 

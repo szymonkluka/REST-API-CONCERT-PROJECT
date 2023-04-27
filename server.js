@@ -6,6 +6,14 @@ const testimonialsRoutes = require('./routes/testimonials.routes');
 const concertsRoutes = require('./routes/concerts.routes');
 const seatsRoutes = require('./routes/seats.routes');
 const http = require('http');
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/NewWaveDB', { useNewUrlParser: true });
+
+const db = mongoose.connection;
+db.once('open', () => {
+  console.log('Connected to the database');
+});
+db.on('error', err => console.log('Error ' + err));
 
 const server = http.createServer(app);
 
@@ -38,6 +46,12 @@ io.on('connection', (socket) => {
 
   socket.on('updateSeats', (updatedSeatsData) => {
     io.emit('updateSeats', updatedSeatsData);
+  });
+
+  socket.on('addSeat', (newSeat) => {
+    console.log('New seat added:', newSeat);
+    // Handle the new seat data as needed
+    io.emit('updateSeats', newSeat);
   });
 
   socket.on('disconnect', () => {
